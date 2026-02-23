@@ -1,0 +1,47 @@
+<!-- templates/projects.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <h1 class="display-3 fw-bold mb-5 text-center" style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        All Projects
+    </h1>
+    
+    <div class="row g-4">
+        {% for project in projects %}
+        <div class="col-md-6 col-lg-4" id="project-{{ project.id }}">
+            <div class="project-card">
+                <div class="position-relative mb-4">
+                    <div class="project-image-placeholder" style="height: 200px; background: linear-gradient(135deg, {{ project.color }}30, {{ project.color }}60); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-code fa-4x" style="color: {{ project.color }}"></i>
+                    </div>
+                    {% if project.featured %}
+                    <span class="position-absolute top-0 end-0 badge m-3" style="background: var(--accent-color);">Featured</span>
+                    {% endif %}
+                </div>
+                
+                <h3 class="h4 mb-2">{{ project.title }}</h3>
+                <p class="mb-2"><small style="color: {{ project.color }}">{{ project.category }}</small></p>
+                <p class="mb-3" style="color: var(--text-secondary)">{{ project.description }}</p>
+                
+                <div class="technologies mb-3">
+                    {% for tech in project.technologies %}
+                    <span class="badge me-1 mb-1" style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="#" class="text-decoration-none" style="color: var(--primary-color);">
+                        View Details <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                    <div>
+                        <a href="#" class="text-white me-2"><i class="fab fa-github"></i></a>
+                        <a href="#" class="text-white"><i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
