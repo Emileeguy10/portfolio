@@ -13,6 +13,7 @@
             --primary-color: #6366f1;
             --secondary-color: #8b5cf6;
             --accent-color: #ec4899;
+            --navbar-height: 88px; /* space to avoid fixed navbar overlap */
             --dark-bg: #0f0f1a;
             --card-bg: rgba(255, 255, 255, 0.05);
             --text-primary: #ffffff;
@@ -28,9 +29,90 @@
 
         body {
             font-family: 'Space Grotesk', sans-serif;
+                /* General responsive tweaks */
+                img { max-width: 100%; height: auto; }
+
+            /* profile avatar class */
+            .profile-avatar { width:180px; height:180px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); border-radius: 50%; object-fit: cover; }
+            /* project image placeholders and real project images */
+            .project-image-placeholder { height: 320px; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+            .project-image-placeholder img { width: 100%; height: 100%; object-fit: cover; display: block; }
+            .badge-container > div { transition: transform .2s; }
+            .badge-container > div:hover { transform: translateY(-4px); }
+            /* Header text next to avatar */
+            .header-text { color: var(--text-primary); max-width: 60vw; }
+            .header-text h4 { font-size: 1.25rem; margin-bottom: 0.25rem; color: var(--text-primary); }
+            .header-text p { margin: 0; color: var(--text-secondary); }
+            /* ensure header text doesn't get pushed off-screen */
+            header .container { overflow: visible; }
+            /* skill bubble styles */
+            .skill-bubble {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 64px;
+                padding: 0.5rem 0.9rem;
+                border-radius: 12px; /* beveled rectangle */
+                color: #0f0f1a;
+                font-weight: 700;
+                text-align: center;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+                /* responsive font that clamps for small to large screens */
+                font-size: clamp(11px, 1.8vw, 14px);
+                line-height: 1.05;
+                overflow: hidden;
+                white-space: normal; /* allow wrapping */
+                word-break: break-word; /* break long words */
+                hyphens: auto;
+                margin: 0.1rem;
+            }
+            .skill-bubble small { display: block; }
+
+                    @media (max-width: 1200px) {
+                    .navbar-brand { font-size: 1.8rem; }
+                    .glitch { font-size: 3.5rem; }
+                    .profile-avatar { width:160px; height:160px; }
+                    .project-image-placeholder { height: 300px; }
+                }
+
+                    @media (max-width: 992px) {
+                    :root { --navbar-height: 120px; }
+                    .profile-avatar { width: 120px; height: 120px; }
+                    header h4 { font-size: 1.25rem; }
+                    .display-1 { font-size: 2.6rem; }
+                    .hero { min-height: 70vh; }
+                    .project-image-placeholder { height: 260px; }
+                }
+
+                    @media (max-width: 768px) {
+                    /* increase top offset on small screens because navbar wraps */
+                    :root { --navbar-height: 140px; }
+                    header { padding: 0.75rem 0; }
+                    .profile-avatar { width: 100px; height: 100px; }
+                    header h4 { font-size: 1rem; }
+                    header p.d-none.d-md-block { display: none !important; }
+                    .hero { padding-top: 1rem; min-height: 60vh; }
+                    .glitch { font-size: 2rem; }
+                    .display-1 { font-size: 1.8rem; }
+                    .project-card { padding: 1.25rem; }
+                    .nav-link { margin: 0 0.5rem; }
+                    .project-image-placeholder { height: 220px; }
+                }
+
+                    @media (max-width: 576px) {
+                    :root { --navbar-height: 160px; }
+                    .navbar-brand { font-size: 1.4rem; }
+                    .profile-avatar { width: 90px; height: 90px; }
+                    header h4 { font-size: 0.95rem; }
+                    .glitch { font-size: 1.6rem; }
+                    .display-1 { font-size: 1.6rem; }
+                    .contact-form button { padding: 0.6rem 1rem; }
+                    .project-image-placeholder { height: 180px; }
+                }
             background: var(--dark-bg);
             color: var(--text-primary);
             overflow-x: hidden;
+            padding-top: var(--navbar-height);
             position: relative;
         }
 
@@ -101,6 +183,40 @@
             transition: all 0.1s;
             mix-blend-mode: difference;
         }
+
+        /* Avatar hover and zoom overlay */
+        .profile-avatar { transition: transform 0.4s ease, box-shadow 0.3s ease; }
+        .profile-avatar:hover { transform: scale(1.07); box-shadow: 0 12px 40px rgba(0,0,0,0.6); }
+        .profile-avatar:active, .profile-avatar:focus { transform: scale(1.12); }
+
+        /* Fullscreen overlay for clicked avatar */
+        .avatar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 2rem;
+        }
+
+        .avatar-overlay.open { display: flex; }
+
+        .avatar-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            transform: scale(1);
+            transition: transform 0.4s ease;
+            cursor: zoom-out;
+        }
+
+        .avatar-overlay img.zoomed { transform: scale(1.1); }
 
         /* Navigation */
         .navbar {
@@ -310,6 +426,8 @@
 
         /* Responsive design */
         @media (max-width: 768px) {
+            /* increase top offset on small screens because navbar wraps */
+            :root { --navbar-height: 140px; }
             .glitch {
                 font-size: 2.5rem;
             }
@@ -325,7 +443,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/">AI.Creator</a>
+            <a class="navbar-brand" href="/">MULUH EMILE</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -344,9 +462,41 @@
                         <a class="nav-link" href="#contact">Contact</a>
                     </li>
                 </ul>
+                <!-- navbar avatar removed; profile header added below -->
             </div>
         </div>
     </nav>
+
+    <!-- Top header profile (shared across pages) -->
+    <header class="py-4" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between flex-wrap">
+                <div class="d-flex align-items-center">
+                    <div class="me-3 profile-avatar" tabindex="0" role="button" aria-label="Profile image" style="overflow:hidden; border-radius:50%; border:4px solid rgba(255,255,255,0.06); flex-shrink:0; cursor: zoom-in;">
+                        <img src="{{ user.profile_image }}" alt="profile" style="width:100%; height:100%; object-fit:cover; display:block;">
+                    </div>
+                    <div class="header-text">
+                        <h4 class="mb-1">{{ user.name }}</h4>
+                        <p class="small mb-1" style="color: var(--text-secondary);">{{ user.title }}</p>
+                        <p class="small mb-0" style="max-width:720px; color: var(--text-secondary);">{{ user.bio }}</p>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 align-items-center mt-3 mt-md-0 badge-container">
+                    {% for skill in skills[:4] %}
+                    <div class="skill-bubble" title="{{ skill.name }}" style="background: linear-gradient(135deg, {{ skill.color }}, var(--accent-color));">
+                        {{ skill.name }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Avatar overlay for click-zoom -->
+    <div class="avatar-overlay" id="avatarOverlay" aria-hidden="true">
+        <img id="overlayImage" src="{{ user.profile_image }}" alt="{{ user.name }} enlarged" />
+    </div>
 
     {% block content %}{% endblock %}
 
@@ -416,6 +566,74 @@
             card.addEventListener('mouseleave', () => {
                 card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
             });
+        });
+
+        // Avatar click to open overlay
+        const avatar = document.querySelector('.profile-avatar');
+        const overlay = document.getElementById('avatarOverlay');
+        const overlayImg = document.getElementById('overlayImage');
+
+        function openOverlay() {
+            overlay.classList.add('open');
+            overlay.setAttribute('aria-hidden', 'false');
+            // small zoom effect after open
+            setTimeout(() => overlayImg.classList.add('zoomed'), 50);
+        }
+
+        function closeOverlay() {
+            overlayImg.classList.remove('zoomed');
+            overlay.classList.remove('open');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+
+        avatar && avatar.addEventListener('click', (e) => {
+            openOverlay();
+        });
+
+        // Clicking on overlay image toggles a further zoom
+        overlayImg && overlayImg.addEventListener('click', (e) => {
+            if (overlayImg.classList.contains('zoomed')) {
+                overlayImg.classList.toggle('zoomed');
+            } else {
+                overlayImg.classList.add('zoomed');
+            }
+        });
+
+        // Clicking outside image closes overlay
+        overlay && overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeOverlay();
+        });
+
+        // ESC to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeOverlay();
+        });
+
+        // Lightbox for project images
+        const lightbox = document.createElement('div');
+        lightbox.id = 'imageLightbox';
+        lightbox.style = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; z-index:11000; padding:1rem;';
+        const lbImg = document.createElement('img');
+        lbImg.style = 'max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.7);';
+        lightbox.appendChild(lbImg);
+        document.body.appendChild(lightbox);
+
+        document.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.matches('.project-image-placeholder img')) {
+                lbImg.src = target.src;
+                lightbox.style.display = 'flex';
+            } else if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+                lbImg.src = '';
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                lightbox.style.display = 'none';
+                lbImg.src = '';
+            }
         });
     </script>
     {% block scripts %}{% endblock %}

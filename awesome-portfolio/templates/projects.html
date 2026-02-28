@@ -12,8 +12,12 @@
         <div class="col-md-6 col-lg-4" id="project-{{ project.id }}">
             <div class="project-card">
                 <div class="position-relative mb-4">
-                    <div class="project-image-placeholder" style="height: 200px; background: linear-gradient(135deg, {{ project.color }}30, {{ project.color }}60); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                    <div class="project-image-placeholder" style="background: linear-gradient(135deg, {{ project.color }}30, {{ project.color }}60);">
+                        {% if project.image %}
+                        <img src="{{ project.image }}" alt="{{ project.title }}" />
+                        {% else %}
                         <i class="fas fa-code fa-4x" style="color: {{ project.color }}"></i>
+                        {% endif %}
                     </div>
                     {% if project.featured %}
                     <span class="position-absolute top-0 end-0 badge m-3" style="background: var(--accent-color);">Featured</span>
